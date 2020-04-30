@@ -432,7 +432,7 @@ def alpakkaProject(projectId: String, moduleName: String, additionalSettings: sb
   import com.typesafe.tools.mima.core.{Problem, ProblemFilters}
   Project(id = projectId, base = file(projectId))
     .enablePlugins(AutomateHeaderPlugin)
-    .disablePlugins(SitePlugin)
+    .disablePlugins(BintrayPlugin, MimaPlugin, SitePlugin)
     .settings(
       name := s"akka-stream-alpakka-$projectId",
       AutomaticModuleName.settings(s"akka.stream.alpakka.$moduleName"),
