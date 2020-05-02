@@ -11,11 +11,14 @@ import akka.stream.alpakka.googlecloud.pubsub.impl.GoogleTokenApi.AccessTokenExp
 import scala.concurrent.Future
 
 @InternalApi
-private[googlecloud] class GoogleSession(clientEmail: String, privateKey: String, tokenApi: GoogleTokenApi) {
+private[googlecloud] class GoogleSession(clientEmail: String,
+                                         privateKey: String,
+                                         tokenApi: GoogleTokenApi,
+                                         tokenPath: Option[String] = None) {
   protected var maybeAccessToken: Option[Future[AccessTokenExpiry]] = None
 
   private def getNewToken()(implicit materializer: Materializer): Future[AccessTokenExpiry] = {
-    val accessToken = tokenApi.getAccessToken(clientEmail = clientEmail, privateKey = privateKey)
+    val accessToken = tokenApi.getAccessToken(clientEmail = clientEmail, privateKey = privateKey, tokenPath)
     maybeAccessToken = Some(accessToken)
     accessToken
   }
@@ -25,6 +28,7 @@ private[googlecloud] class GoogleSession(clientEmail: String, privateKey: String
 
   def getToken()(implicit materializer: Materializer): Future[String] = {
     import materializer.executionContext
+
     maybeAccessToken
       .getOrElse(getNewToken())
       .flatMap { result =>

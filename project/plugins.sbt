@@ -19,3 +19,5 @@ addSbtPlugin("com.lightbend.akka.grpc" % "sbt-akka-grpc" % "0.8.4")
 // #grpc-agent
 addSbtPlugin("com.lightbend.sbt" % "sbt-javaagent" % "0.1.5")
 // #grpc-agent
+// s3 resolver
+addSbtPlugin("com.frugalmechanic" % "fm-sbt-s3-resolver" % "0.19.0")

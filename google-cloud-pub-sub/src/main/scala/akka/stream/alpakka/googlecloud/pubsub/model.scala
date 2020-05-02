@@ -48,6 +48,19 @@ object PubSubConfig {
       session = new GoogleSession(clientEmail, privateKey, new GoogleTokenApi(Http()))
     )
 
+  def apply(projectId: String, tokenPath: String)(
+      implicit actorSystem: ActorSystem
+  ): PubSubConfig =
+    new PubSubConfig(
+      projectId = projectId,
+      pullReturnImmediately = true,
+      pullMaxMessagesPerInternalBatch = 1000,
+      session = new GoogleSession(clientEmail = "fake-email",
+                                  privateKey = "fake-privatekey",
+                                  new GoogleTokenApi(Http()),
+                                  Some(tokenPath))
+    )
+
   def apply(projectId: String,
             clientEmail: String,
             privateKey: String,

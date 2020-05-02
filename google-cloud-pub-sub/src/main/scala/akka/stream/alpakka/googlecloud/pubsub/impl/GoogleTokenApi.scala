@@ -36,13 +36,19 @@ private[googlecloud] class GoogleTokenApi(http: => HttpExt) {
     Jwt.encode(claim, privateKey, encodingAlgorithm)
   }
 
-  def getAccessToken(clientEmail: String, privateKey: String)(
+  def getAccessToken(clientEmail: String, privateKey: String, jwtPath: Option[String] = None)(
       implicit materializer: Materializer
   ): Future[AccessTokenExpiry] = {
     import materializer.executionContext
 
     val expiresAt = now + oneHour
-    val jwt = generateJwt(clientEmail, privateKey)
+
+    val jwt = jwtPath match {
+      case Some(path) =>
+        scala.io.Source.fromFile(path).mkString
+      case None =>
+        generateJwt(clientEmail, privateKey)
+    }
 
     val requestEntity = FormData(
       "grant_type" -> "urn:ietf:params:oauth:grant-type:jwt-bearer",
